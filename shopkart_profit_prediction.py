@@ -132,9 +132,7 @@ def main():
     scaler = joblib.load("scaler.pkl")
 
     # ---------------- Header ----------------
-    st.markdown(    <h1 style='text-align:center;'>ShopKart Profit Category Prediction</h1>
-
-)
+    st.markdown('<div class="badge">FORECASTING ENGINE</div>', unsafe_allow_html=True)
     st.markdown('<div class="header-title">Predict</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="header-sub">Predict whether an order falls under Low Profit or High Profit '
