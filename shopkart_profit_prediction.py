@@ -56,26 +56,64 @@ def main():
         div[data-testid="stVerticalBlockBorderWrapper"] {
             background-color: #131a29;
             border: 1px solid #232c3d;
-            border-radius: 16px;
-            padding: 6px 6px;
-            margin-bottom: 1.2rem;
+            border-radius: 18px;
+            padding: 8px 10px 16px 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"]::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6d5efc, #9b8cff, transparent);
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+            border-color: #313d55;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
         }
 
         .card-heading {
             color: #e6e9f0;
-            font-size: 1.02rem;
-            font-weight: 600;
-            margin-bottom: 0.9rem;
-            padding-top: 0.4rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            margin: 0.5rem 0 1.1rem 0;
+            padding-bottom: 0.7rem;
+            border-bottom: 1px solid #1f2738;
+        }
+        .card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: rgba(109, 94, 252, 0.15);
+            margin-right: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* Row spacing */
+        div[data-testid="stHorizontalBlock"] {
+            gap: 14px;
+            margin-bottom: 0.35rem;
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"] div[data-testid="stVerticalBlock"] > div {
+            margin-bottom: 0.55rem;
         }
 
         /* Labels */
         label, .stSlider label, .stDateInput label, .stSelectbox label, .stNumberInput label {
             color: #8f98a8 !important;
-            font-size: 0.72rem !important;
-            font-weight: 600 !important;
-            letter-spacing: 0.04em;
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
+            margin-bottom: 4px !important;
         }
 
         /* Inputs */
@@ -87,11 +125,36 @@ def main():
             border: 1px solid #2a3448 !important;
             border-radius: 10px !important;
             color: #f0f2f6 !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        div[data-baseweb="select"] > div:focus-within,
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        .stDateInput input:focus {
+            border-color: #6d5efc !important;
+            box-shadow: 0 0 0 3px rgba(109, 94, 252, 0.18) !important;
+            outline: none !important;
+        }
+
+        /* Number input +/- buttons */
+        div[data-testid="stNumberInput"] button {
+            background-color: #202b40 !important;
+            border: 1px solid #2a3448 !important;
+            color: #c3c9d6 !important;
+            border-radius: 8px !important;
+            transition: background-color 0.2s ease;
+        }
+        div[data-testid="stNumberInput"] button:hover {
+            background-color: #2b3752 !important;
+            color: #ffffff !important;
         }
 
         /* Slider */
         .stSlider [data-baseweb="slider"] {
-            margin-top: 0.4rem;
+            margin-top: 0.6rem;
+        }
+        .stSlider [role="slider"] {
+            box-shadow: 0 0 0 5px rgba(109, 94, 252, 0.2) !important;
         }
 
         /* Summary rows (Gross Sales / Est. Profit) */
@@ -99,11 +162,15 @@ def main():
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 4px;
+            padding: 9px 12px;
             font-size: 0.85rem;
+            background-color: #0f1522;
+            border-radius: 10px;
+            margin-top: 6px;
+            border: 1px solid #1c2536;
         }
         .summary-label { color: #9aa3b2; }
-        .summary-value { color: #f0f2f6; font-weight: 600; }
+        .summary-value { color: #f0f2f6; font-weight: 700; }
         .summary-value.profit { color: #4ade80; }
 
         /* Predict button */
@@ -112,15 +179,22 @@ def main():
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 0.75rem 0;
+            padding: 0.85rem 0;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.98rem;
+            letter-spacing: 0.02em;
             width: 100%;
-            box-shadow: 0 6px 18px rgba(109, 94, 252, 0.35);
+            box-shadow: 0 8px 24px rgba(109, 94, 252, 0.4);
+            transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
         .stButton > button:hover {
             background: linear-gradient(90deg, #7c6dff, #9b8cff);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(109, 94, 252, 0.5);
+        }
+        .stButton > button:active {
+            transform: translateY(0px);
         }
         </style>
         """,
@@ -139,10 +213,14 @@ def main():
         'categories with AI-driven precision.</div>',
         unsafe_allow_html=True,
     )
+    st.markdown('<div style="height:8px"></div>', unsafe_allow_html=True)
 
     # ---------------- Card 1: Order Identity ----------------
     with st.container(border=True):
-        st.markdown('<div class="card-heading">📝 &nbsp;Order Identity</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="card-heading"><span class="card-icon">📝</span>Order Identity</div>',
+            unsafe_allow_html=True,
+        )
 
         col1, col2 = st.columns(2)
         with col1:
@@ -179,7 +257,10 @@ def main():
 
     # ---------------- Card 2: Financial Inputs ----------------
     with st.container(border=True):
-        st.markdown('<div class="card-heading">💳 &nbsp;Financial Inputs</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="card-heading"><span class="card-icon">💳</span>Financial Inputs</div>',
+            unsafe_allow_html=True,
+        )
 
         col7, col8 = st.columns(2)
         with col7:
