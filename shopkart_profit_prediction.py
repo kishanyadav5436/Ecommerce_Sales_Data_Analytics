@@ -202,7 +202,7 @@ def main():
     )
 
     # Load Model & Scaler
-    model = joblib.load("decision_tree_model.pkl")
+    model = joblib.load("Gradient_Boodting_model.pkl")
     scaler = joblib.load("scaler.pkl")
 
     # ---------------- Header ----------------
@@ -270,26 +270,10 @@ def main():
 
         p6 = st.number_input("Shipping Cost (₹)", min_value=0.0, max_value=10000.0, step=10.0, value=150.0)
 
-        sales = st.number_input("Gross Sales (₹)", min_value=0.0, max_value=1000000.0, step=100.0, value=0.0)
-        profit = st.number_input("Est. Profit (₹)", min_value=-100000.0, max_value=100000.0, step=100.0, value=0.0)
 
-        st.markdown(
-            f"""
-            <div class="summary-row">
-                <span class="summary-label">Gross Sales</span>
-                <span class="summary-value">₹{sales:,.2f}</span>
-            </div>
-            <div class="summary-row">
-                <span class="summary-label">Est. Profit</span>
-                <span class="summary-value profit">+ ₹{profit:,.2f}</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
 
     # ---------------- Derived Features ----------------
-    profit_margin = (profit / sales) * 100 if sales != 0 else 0
-    revenue_per_item = sales / p3 if p3 != 0 else 0
+   
 
     city_cols = {
         "City_Chennai": 0, "City_Delhi": 0, "City_Hyderabad": 0, "City_Jaipur": 0,
@@ -315,15 +299,11 @@ def main():
         "Discount": [p5],
         "Shipping": [p6],
         "Delivery": [p7],
-        "Sales": [sales],
-        "Profit": [profit],
         "Rating": [p8],
         "Month": [p9],
         "Year": [p10],
         "Day_of_Week": [p11],
         "Weekend": [p12],
-        "Profit_Margin": [profit_margin],
-        "Revenue_per_Item": [revenue_per_item],
         **{k: [v] for k, v in city_cols.items()},
         **{k: [v] for k, v in category_cols.items()},
     })
