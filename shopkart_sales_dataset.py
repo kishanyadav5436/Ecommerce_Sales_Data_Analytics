@@ -4,7 +4,7 @@ import numpy as np
 import joblib
 from datetime import datetime
 
-model = joblib.load("gradient_boosting_model.pkl")
+model = joblib.load("Gradient_boosting_model.pkl")
 scaler = joblib.load("scaler.pkl")
 
 st.title("Ecommerce Profit Prediction System")
