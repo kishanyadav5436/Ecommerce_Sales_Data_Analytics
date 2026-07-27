@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import datetime
 import joblib
@@ -201,9 +202,38 @@ def main():
         unsafe_allow_html=True,
     )
 
-    # Load Model & Scaler
-    model = joblib.load("Gradient_Boodting_model.pkl")
-    scaler = joblib.load("scaler.pkl")
+    # ---------------- Load Model & Scaler (robust) ----------------
+    # Resolve paths relative to this script's own folder, not Streamlit's
+    # working directory (which can differ on Streamlit Cloud).
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    MODEL_PATH = os.path.join(BASE_DIR, "Gradient_Boodting_model.pkl")
+    SCALER_PATH = os.path.join(BASE_DIR, "scaler.pkl")
+
+    @st.cache_resource(show_spinner="Loading model...")
+    def load_artifacts():
+        missing = [p for p in (MODEL_PATH, SCALER_PATH) if not os.path.exists(p)]
+        if missing:
+            raise FileNotFoundError(
+                "Missing file(s): " + ", ".join(missing) +
+                ". Make sure the .pkl files are committed to the repo "
+                "(check they aren't in .gitignore or over GitHub's 100MB limit)."
+            )
+        try:
+            model = joblib.load(MODEL_PATH)
+            scaler = joblib.load(SCALER_PATH)
+        except ModuleNotFoundError as e:
+            raise ModuleNotFoundError(
+                f"{e}. The pickle file needs a Python package that isn't installed "
+                "in this environment. Add it to requirements.txt (most likely "
+                "'scikit-learn', or 'xgboost'/'lightgbm' if that's what trained the model)."
+            ) from e
+        return model, scaler
+
+    try:
+        model, scaler = load_artifacts()
+    except Exception as e:
+        st.error(f"Could not load model/scaler: {e}")
+        st.stop()
 
     # ---------------- Header ----------------
     st.markdown('<div class="badge">FORECASTING ENGINE</div>', unsafe_allow_html=True)
@@ -270,11 +300,7 @@ def main():
 
         p6 = st.number_input("Shipping Cost (₹)", min_value=0.0, max_value=10000.0, step=10.0, value=150.0)
 
-
-
     # ---------------- Derived Features ----------------
-   
-
     city_cols = {
         "City_Chennai": 0, "City_Delhi": 0, "City_Hyderabad": 0, "City_Jaipur": 0,
         "City_Lucknow": 0, "City_Mumbai": 0, "City_Pune": 0,
@@ -310,8 +336,13 @@ def main():
 
     # ---------------- Predict ----------------
     if st.button("✨  Predict Profit Category"):
-        data_scaled = scaler.transform(data_new)
-        pred = model.predict(data_scaled)
+        try:
+            data_scaled = scaler.transform(data_new)
+            pred = model.predict(data_scaled)
+        except Exception as e:
+            st.error(f"Prediction failed: {e}")
+            return
+
         if pred[0] == 1:
             st.success("Predicted Profit Category: High Profit")
         else:
