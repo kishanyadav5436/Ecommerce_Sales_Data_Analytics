@@ -4,8 +4,9 @@
 !scaler.pkl
 !shopkart_profit_prediction.py
 !decision_tree_model.pkl
+!Gradient_Boodting_model.pkl
 !requirements.txt
-!**/scaler.pkl
+!README.md
 
 
 # Keep common local artifacts ignored
